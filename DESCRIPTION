@@ -1,0 +1,19 @@
+Package: outference
+Type: Package
+Title: Valid Inference in Linear Regression Corrected for Outlier Removal
+Version: 0.0.9000
+Authors@R: person("Shuxiao", "Chen", email = "sc2667@cornell.edu", role = c("aut", "cre"))
+Description: Tools for inference in linear regression models after outliers 
+    are detected and removed. Currently support outlier detection based on 
+    Cook's distance, DFFITS and lasso program.
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Imports: penalized,
+    intervals,
+    glmnet,
+    MASS,
+    stats,
+    utils,
+    graphics
+RoxygenNote: 6.0.1
