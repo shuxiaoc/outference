@@ -162,12 +162,15 @@ outference <- function(formula, data, method = c("cook", "dffits", "lasso"),
       stop("for lasso, cutoff must be null, a scaler, or a string like \'0.5x\'")
     }
 
-    utils::capture.output(
-      fit.lasso <- penalized::penalized(response = PXperpY, penalized = PXperp, unpenalized = ~0, standardize = F,
-                             lambda1 = cutoff*n)
-    )
+    # utils::capture.output(
+    #   fit.lasso <- penalized::penalized(response = PXperpY, penalized = PXperp, unpenalized = ~0, standardize = F,
+    #                          lambda1 = cutoff*n)
+    # )
+    # 
+    fit.lasso <- glmnet::glmnet(x = PXperp, y = PXperpY, family = "gaussian", alpha = 1, 
+                                lambda = cutoff, standardize = F, intercept = F)
 
-    u.hat <- penalized::coef(fit.lasso, "all")
+    u.hat <- as.numeric(glmnet::coef.glmnet(fit.lasso)[-1])
 
     # ad-hoc check of kkt condition to make sure the lasso problem is what we actually want
     if (checkKKT(y = PXperpY, X = PXperp, lambda = cutoff, beta.hat = u.hat) == FALSE) {

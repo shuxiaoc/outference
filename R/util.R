@@ -105,25 +105,18 @@ estimateSigma = function(y, X) {
   p <- ncol(X)
   X.enlarged <- cbind(X, diag(n))
   # we first choose lambda by cross-validation.
-  # notice that we are using cv.glmnet instead of penalized::optL1,
-  # since the criteria of optL1 is based on likelihood instead of quadratic loss,
-  # and optL1 has the risk of converging to a local optima (see ?optL1),
-  # and empirically we find optL1 gives way TOO large sigma hat.
-  # so we use glmnet::cv.glmnet to compute the cross-validation lambda.
   # notice that we are NOT penalizing the intercept
   suppressWarnings(fit.lasso <- glmnet::cv.glmnet(x = X.enlarged[,-1], y = y, standardize = FALSE, intercept = T))
   lambda <- fit.lasso$lambda.min
-  # now we use the penalized::penalized, since this function is
-  # optimized for the lasso solution with a single lambda,
-  # and empirically we find this is more accurate than the solution
-  # given by glmnet::glmnet, in terms of kkt conditions.
-  utils::capture.output(
-    # again notice that we are NOT penalizing the intercept
-    fit.lasso <- penalized::penalized(response = y, penalized = X.enlarged[,-1], standardize = F,
-                           lambda1 = lambda*n)
-  )
-  param.hat <- penalized::coef(fit.lasso, "all")
-  sigma <- sqrt(sum((y-X.enlarged%*%param.hat)^2)/(length(y)-sum(param.hat!=0)))
+  # utils::capture.output(
+  #   # again notice that we are NOT penalizing the intercept
+  #   fit.lasso <- penalized::penalized(response = y, penalized = X.enlarged[,-1], standardize = F,
+  #                          lambda1 = lambda*n)
+  # )
+  fit.lasso <- glmnet::glmnet(x = X.enlarged[, -1], y = y, family = "gaussian", alpha = 1, lambda = lambda,
+                              standardize = F, intercept = T)
+  param.hat <- as.numeric(glmnet::coef.glmnet(fit.lasso))
+  sigma <- sqrt(sum((y-X.enlarged%*%param.hat)^2)/(n-sum(param.hat!=0)))
   return(sigma)
 }
 
