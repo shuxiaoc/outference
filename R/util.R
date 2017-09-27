@@ -106,13 +106,15 @@ estimateSigma = function(y, X) {
   X.enlarged <- cbind(X, diag(n))
   # we first choose lambda by cross-validation.
   # notice that we are NOT penalizing the intercept
-  suppressWarnings(fit.lasso <- glmnet::cv.glmnet(x = X.enlarged[,-1], y = y, standardize = FALSE, intercept = T))
+  if (n <= 10) {
+    nfolds <- n
+    warning("Too few observations to get an accurate variance estimate!")
+  }
+  else {
+    nfolds <- 10
+  }
+  suppressWarnings(fit.lasso <- glmnet::cv.glmnet(x = X.enlarged[,-1], y = y, standardize = F, intercept = T, nfolds = nfolds))
   lambda <- fit.lasso$lambda.min
-  # utils::capture.output(
-  #   # again notice that we are NOT penalizing the intercept
-  #   fit.lasso <- penalized::penalized(response = y, penalized = X.enlarged[,-1], standardize = F,
-  #                          lambda1 = lambda*n)
-  # )
   fit.lasso <- glmnet::glmnet(x = X.enlarged[, -1], y = y, family = "gaussian", alpha = 1, lambda = lambda,
                               standardize = F, intercept = T)
   param.hat <- as.numeric(glmnet::coef.glmnet(fit.lasso))
