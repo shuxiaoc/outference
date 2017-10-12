@@ -166,16 +166,11 @@ outference <- function(formula, data, method = c("cook", "dffits", "lasso"),
     #   fit.lasso <- penalized::penalized(response = PXperpY, penalized = PXperp, unpenalized = ~0, standardize = F,
     #                          lambda1 = cutoff*n)
     # )
-    # 
-    fit.lasso <- glmnet::glmnet(x = PXperp, y = PXperpY, family = "gaussian", alpha = 1, 
+    #
+    fit.lasso <- glmnet::glmnet(x = PXperp, y = PXperpY, family = "gaussian", alpha = 1,
                                 lambda = cutoff, standardize = F, intercept = F)
 
     u.hat <- as.numeric(glmnet::coef.glmnet(fit.lasso)[-1])
-
-    # ad-hoc check of kkt condition to make sure the lasso problem is what we actually want
-    if (checkKKT(y = PXperpY, X = PXperp, lambda = cutoff, beta.hat = u.hat) == FALSE) {
-      warning("this lasso solution does not satisfy kkt conditions!")
-    }
 
     outlier.det <- which(u.hat != 0)
     if (n - length(outlier.det) <= p) stop("number of remaining observations less than number of variables, the model is singular")
@@ -184,11 +179,25 @@ outference <- function(formula, data, method = c("cook", "dffits", "lasso"),
       lm.call$subset <- -outlier.det
       fit.rm <- eval(lm.call, parent.frame())
     }
+
     constr <- constrInResponseLasso(n, p, PXperp, outlier.det, sign(u.hat[outlier.det]), cutoff)
+
     # ad-hoc check of the polyhedron: Ay >= b should always hold
-    if (any(constr$A %*% y - constr$b < -1e-5)) {
-      stop("constraint for lasso is problematic")
+    check.poly <- any(constr$A %*% y - constr$b < -1e-5)
+
+    # ad-hoc check of kkt condition to make sure the lasso problem is what we actually want
+    if (checkKKT(y = PXperpY, X = PXperp, lambda = cutoff, beta.hat = u.hat) == FALSE) {
+      warning("this lasso solution does not satisfy kkt conditions!")
+      if (check.poly) {
+        warning("constraint for lasso is problematic since the lasso solution is not accurate!")
+      }
     }
+    else { # KKT condition is indeed satisfied
+      if (check.poly) {
+        stop("constraint for lasso is problematic")
+      }
+    }
+
     out <- list(fit.full = fit.full, fit.rm = fit.rm, method = method, cutoff = cutoff, outlier.det = outlier.det,
                magnitude = u.hat, constraint = constr, sigma = sigma, call = this.call)
     class(out) <- "outference"
