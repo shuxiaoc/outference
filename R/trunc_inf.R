@@ -173,7 +173,6 @@ constrInResponseDffits <- function(n, p, PX, PXperp, outlier.det, cutoff) {
 #'
 #'
 constrInResponseLasso <- function(n, p, PXperp, outlier.det, outlier.det.sign, cutoff) {
-
   if (length(outlier.det) == 0) {
     A <- 1/(n*cutoff) * rbind(-PXperp, PXperp)
     b <- rep(-1, nrow(A))
@@ -182,7 +181,7 @@ constrInResponseLasso <- function(n, p, PXperp, outlier.det, outlier.det.sign, c
   }
   else {
     # 0 < length(outlier.det) < n (if == n, then lm_outlier_removed should have already thrown an error)
-    M <- (1:n)[-outlier.det]
+    # M <- (1:n)[-outlier.det]
     # PXperp.Mc <- PXperp[, outlier.det]
     # PXperp.Mc.crosspd <- crossprod(PXperp.Mc)
     # PXperp.Mc.crosspd.inv <- chol2inv(chol(PXperp.Mc.crosspd))
@@ -218,7 +217,7 @@ constrInResponseLasso <- function(n, p, PXperp, outlier.det, outlier.det.sign, c
     }
     A <- rbind(A, diag.sign  %*% PXperp.Mc.inv %*% PXperp[-M, ]) # stack A0 and A1 together
     A <- A %*% PXperp # polyhedron is w.r.t. y (not PXperp %*% y!)
-    temp <- as.numeric(n*cutoff * diag.sign %*% PXperp.Mc.inv) # b1
+    temp <- as.numeric(n*cutoff * diag.sign %*% PXperp.Mc.inv %*% outlier.det.sign) # b1
     b <- c(b, temp)
 
   }
