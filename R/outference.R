@@ -182,21 +182,14 @@ outference <- function(formula, data, method = c("cook", "dffits", "lasso"),
 
     constr <- constrInResponseLasso(n, p, PXperp, outlier.det, sign(u.hat[outlier.det]), cutoff)
 
-    # ad-hoc check of the polyhedron: Ay >= b should always hold
-    check.poly <- any(constr$A %*% y - constr$b < -1e-5)
+    # # ad-hoc check of the polyhedron: Ay >= b should always hold
+    # check.poly <- any(constr$A %*% y - constr$b < -1e-5)
 
     # ad-hoc check of kkt condition to make sure the lasso problem is what we actually want
     if (checkKKT(y = PXperpY, X = PXperp, lambda = cutoff, beta.hat = u.hat) == FALSE) {
       warning("this lasso solution does not satisfy kkt conditions!")
-      if (check.poly) {
-        warning("constraint for lasso is problematic since the lasso solution is not accurate!")
-      }
     }
-    else { # KKT condition is indeed satisfied
-      if (check.poly) {
-        stop("constraint for lasso is problematic")
-      }
-    }
+
 
     out <- list(fit.full = fit.full, fit.rm = fit.rm, method = method, cutoff = cutoff, outlier.det = outlier.det,
                magnitude = u.hat, constraint = constr, sigma = sigma, call = this.call)
