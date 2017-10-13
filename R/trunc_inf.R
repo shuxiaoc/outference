@@ -181,7 +181,7 @@ constrInResponseLasso <- function(n, p, PXperp, outlier.det, outlier.det.sign, c
   }
   else {
     # 0 < length(outlier.det) < n (if == n, then lm_outlier_removed should have already thrown an error)
-    # M <- (1:n)[-outlier.det]
+    M <- (1:n)[-outlier.det]
     # PXperp.Mc <- PXperp[, outlier.det]
     # PXperp.Mc.crosspd <- crossprod(PXperp.Mc)
     # PXperp.Mc.crosspd.inv <- chol2inv(chol(PXperp.Mc.crosspd))
