@@ -183,26 +183,43 @@ constrInResponseLasso <- function(n, p, PXperp, outlier.det, outlier.det.sign, c
   else {
     # 0 < length(outlier.det) < n (if == n, then lm_outlier_removed should have already thrown an error)
     M <- (1:n)[-outlier.det]
-    PXperp.Mc <- PXperp[, outlier.det]
-    PXperp.Mc.crosspd <- crossprod(PXperp.Mc)
-    PXperp.Mc.crosspd.inv <- chol2inv(chol(PXperp.Mc.crosspd))
-    PXperp.Mc.ginv <- PXperp.Mc.crosspd.inv %*% t(PXperp.Mc)
-    proj.Mc <- PXperp.Mc %*% PXperp.Mc.ginv
-    proj.Mc.perp <- diag(n) - proj.Mc
-    temp <- 1/(n*cutoff) * t(PXperp[, M]) %*% proj.Mc.perp
-    A <- rbind(-temp, temp)
-    temp <- t(PXperp[, M]) %*% t(PXperp.Mc.ginv) %*% outlier.det.sign
-    b <- rbind(-1 + temp, -1 - temp)
+    # PXperp.Mc <- PXperp[, outlier.det]
+    # PXperp.Mc.crosspd <- crossprod(PXperp.Mc)
+    # PXperp.Mc.crosspd.inv <- chol2inv(chol(PXperp.Mc.crosspd))
+    # PXperp.Mc.ginv <- PXperp.Mc.crosspd.inv %*% t(PXperp.Mc)
+    # proj.Mc <- PXperp.Mc %*% PXperp.Mc.ginv
+    # proj.Mc.perp <- diag(n) - proj.Mc
+    # temp <- 1/(n*cutoff) * t(PXperp[, M]) %*% proj.Mc.perp
+    # A <- rbind(-temp, temp)
+    # temp <- t(PXperp[, M]) %*% t(PXperp.Mc.ginv) %*% outlier.det.sign
+    # b <- rbind(-1 + temp, -1 - temp)
+    # if (length(outlier.det) == 1) {
+    #   diag.sign <- as.matrix(outlier.det.sign)
+    # }
+    # else {
+    #   diag.sign <- diag(outlier.det.sign)
+    # }
+    # A <- rbind(A, diag.sign %*% PXperp.Mc.ginv)
+    # # translate to polyhedron for y!
+    # A <- A %*% PXperp
+    # b <- as.numeric(rbind(b, cutoff*n * diag.sign %*% PXperp.Mc.crosspd.inv %*% outlier.det.sign))
+
+    PXperp.Mc.inv <- chol2inv(chol(PXperp[-M, -M]))
+    MMc.times.PXperp.Mc.inv <- PXperp[M, -M] %*% PXperp.Mc.inv
+    temp <- -PXperp[M, ] + MMc.times.PXperp.Mc.inv %*% PXperp[-M, ]
+    A <- 1/(n*cutoff) * rbind(temp, -temp) # A0
+    temp <- as.numeric(MMc.times.PXperp.Mc.inv %*% outlier.det.sign)
+    b <- c(-1+temp, -1-temp) # b0
     if (length(outlier.det) == 1) {
       diag.sign <- as.matrix(outlier.det.sign)
     }
     else {
       diag.sign <- diag(outlier.det.sign)
     }
-    A <- rbind(A, diag.sign %*% PXperp.Mc.ginv)
-    # translate to polyhedron for y!
-    A <- A %*% PXperp
-    b <- as.numeric(rbind(b, cutoff*n * diag.sign %*% PXperp.Mc.crosspd.inv %*% outlier.det.sign))
+    A <- rbind(A, diag.sign %*% PXperp[, -M] %*% PXperp.Mc.inv) # stack A0 and A1 together
+    A <- A %*% PXperp # polyhedron is w.r.t. y (not PXperp %*% y!)
+    temp <- as.numeric(n*cutoff * diag.sign %*% PXperp.Mc.inv) # b1
+    b <- c(b, temp)
 
   }
 
