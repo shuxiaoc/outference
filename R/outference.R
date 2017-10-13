@@ -161,7 +161,7 @@ outference <- function(formula, data, method = c("cook", "dffits", "lasso"),
     else {
       stop("for lasso, cutoff must be null, a scaler, or a string like \'0.5x\'")
     }
-    
+
     # the calculation of polyhedron is highly sensitive to the lasso solution,
     # so we use the penalized package for high-precision calculation of lasso solutions.
     # our preliminary simulation shows that the solution by glmnet occationally, though very rare,
@@ -170,10 +170,10 @@ outference <- function(formula, data, method = c("cook", "dffits", "lasso"),
       fit.lasso <- penalized::penalized(response = PXperpY, penalized = PXperp, unpenalized = ~0, standardize = F,
                              lambda1 = cutoff*n)
     )
-    u.hat = coef(fit.lasso, "all")
+    u.hat = penalized::coef(fit.lasso, "all")
     # fit.lasso <- glmnet::glmnet(x = PXperp, y = PXperpY, family = "gaussian", alpha = 1,
     #                             lambda = cutoff, standardize = F, intercept = F)
-    # 
+    #
     # u.hat <- as.numeric(glmnet::coef.glmnet(fit.lasso)[-1])
 
     # ad-hoc check of kkt condition to make sure the lasso problem is what we actually want
