@@ -4,7 +4,7 @@
 \alias{plot.outference}
 \title{Plot the outlying measure from an \code{"outference"} object}
 \usage{
-plot.outference(x, ...)
+\method{plot}{outference}(x, ...)
 }
 \arguments{
 \item{x, }{an object of class \code{"outference"}.}

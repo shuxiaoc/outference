@@ -4,7 +4,7 @@
 \alias{coef.outference}
 \title{Extract coefficients from an \code{"outference"} object}
 \usage{
-coef.outference(object, model = c("removed", "original"), ...)
+\method{coef}{outference}(object, model = c("removed", "original"), ...)
 }
 \arguments{
 \item{object, }{an object of class \code{"outference"}.}
