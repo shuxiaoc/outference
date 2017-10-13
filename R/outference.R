@@ -172,6 +172,11 @@ outference <- function(formula, data, method = c("cook", "dffits", "lasso"),
 
     u.hat <- as.numeric(glmnet::coef.glmnet(fit.lasso)[-1])
 
+    # ad-hoc check of kkt condition to make sure the lasso problem is what we actually want
+    if (checkKKT(y = PXperpY, X = PXperp, lambda = cutoff, beta.hat = u.hat) == FALSE) {
+      warning("this lasso solution does not satisfy kkt conditions!")
+    }
+
     outlier.det <- which(u.hat != 0)
     if (n - length(outlier.det) <= p) stop("number of remaining observations less than number of variables, the model is singular")
     if (length(outlier.det) == 0) fit.rm <- fit.full
@@ -181,16 +186,6 @@ outference <- function(formula, data, method = c("cook", "dffits", "lasso"),
     }
 
     constr <- constrInResponseLasso(n, p, PXperp, outlier.det, sign(u.hat[outlier.det]), cutoff)
-
-    # # ad-hoc check of the polyhedron: Ay >= b should always hold
-    # check.poly <- any(constr$A %*% y - constr$b < -1e-5)
-
-    # ad-hoc check of kkt condition to make sure the lasso problem is what we actually want
-    if (checkKKT(y = PXperpY, X = PXperp, lambda = cutoff, beta.hat = u.hat) == FALSE) {
-      warning("this lasso solution does not satisfy kkt conditions!")
-    }
-
-
     out <- list(fit.full = fit.full, fit.rm = fit.rm, method = method, cutoff = cutoff, outlier.det = outlier.det,
                magnitude = u.hat, constraint = constr, sigma = sigma, call = this.call)
     class(out) <- "outference"
