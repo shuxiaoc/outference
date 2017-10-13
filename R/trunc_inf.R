@@ -216,7 +216,7 @@ constrInResponseLasso <- function(n, p, PXperp, outlier.det, outlier.det.sign, c
     else {
       diag.sign <- diag(outlier.det.sign)
     }
-    A <- rbind(A, diag.sign %*% PXperp[, -M] %*% PXperp.Mc.inv) # stack A0 and A1 together
+    A <- rbind(A, diag.sign  %*% PXperp.Mc.inv %*% PXperp[-M, ]) # stack A0 and A1 together
     A <- A %*% PXperp # polyhedron is w.r.t. y (not PXperp %*% y!)
     temp <- as.numeric(n*cutoff * diag.sign %*% PXperp.Mc.inv) # b1
     b <- c(b, temp)
