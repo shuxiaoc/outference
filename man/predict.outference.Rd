@@ -4,8 +4,8 @@
 \alias{predict.outference}
 \title{Make predictions from an \code{"outference"} object}
 \usage{
-\method{predict}{outference}(object, newdata, interval = c("none",
-  "confidence", "prediction"), level = 0.95, alpha.tilde = NULL, ...)
+predict.outference(object, newdata, interval = c("none", "confidence",
+  "prediction"), level = 0.95, alpha.tilde = NULL, ...)
 }
 \arguments{
 \item{object}{an object of class \code{"outference"}.}

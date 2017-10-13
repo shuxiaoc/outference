@@ -6,10 +6,10 @@
 \alias{print.summary.outference}
 \title{Summarize from an \code{"outference"} object}
 \usage{
-\method{summary}{outference}(object, ...)
+summary.outference(object, ...)
 
-\method{print}{summary.outference}(x, digits = max(3, getOption("digits") -
-  3), signif.stars = getOption("show.signif.stars"), ...)
+print.summary.outference(x, digits = max(3, getOption("digits") - 3),
+  signif.stars = getOption("show.signif.stars"), ...)
 }
 \arguments{
 \item{object, }{an object of class \code{"outference"}.}

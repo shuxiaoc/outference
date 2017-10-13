@@ -9,7 +9,7 @@
 outference(formula, data, method = c("cook", "dffits", "lasso"),
   cutoff = NULL, sigma = NULL)
 
-\method{print}{outference}(x, digits = max(3, getOption("digits") - 3), ...)
+print.outference(x, digits = max(3, getOption("digits") - 3), ...)
 }
 \arguments{
 \item{formula, }{an object of class \code{"\link{formula}"}, the same syntax as in \code{\link{lm}}.}
