@@ -1,6 +1,6 @@
 #' Fit a linear model with outliers detected and removed
 #'
-#' This function detects outliers using user-specified method, and
+#' This function detects outliers using a user-specified method, and
 #'     fits a linear regression model with outliers removed. The object
 #'     returned by this function can be used for valid inference corrected
 #'     for outlier removal through generic functions like \code{\link{summary}},

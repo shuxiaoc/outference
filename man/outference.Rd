@@ -60,7 +60,7 @@ This function returns an object of \code{\link{class}} \code{"outference"}.
     \item{call, }{the function call.}
 }
 \description{
-This function detects outliers using user-specified method, and
+This function detects outliers using a user-specified method, and
     fits a linear regression model with outliers removed. The object
     returned by this function can be used for valid inference corrected
     for outlier removal through generic functions like \code{\link{summary}},
