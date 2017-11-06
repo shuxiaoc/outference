@@ -13,9 +13,7 @@ Imports: intervals,
     glmnet,
     MASS,
     stats,
-    graphics,
-    penalized,
-    utils
+    graphics
 RoxygenNote: 6.0.1
 Suggests: knitr,
     rmarkdown

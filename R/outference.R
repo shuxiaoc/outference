@@ -162,19 +162,20 @@ outference <- function(formula, data, method = c("cook", "dffits", "lasso"),
       stop("for lasso, cutoff must be null, a scaler, or a string like \'0.5x\'")
     }
 
-    # the calculation of polyhedron is highly sensitive to the lasso solution,
-    # so we use the penalized package for high-precision calculation of lasso solutions.
-    # our preliminary simulation shows that the solution by glmnet occationally, though very rare,
-    # is not accurate enough for polyhedron calculations.
-    utils::capture.output(
-      fit.lasso <- penalized::penalized(response = PXperpY, penalized = PXperp, unpenalized = ~0, standardize = F,
-                             lambda1 = cutoff*n)
-    )
-    u.hat = penalized::coef(fit.lasso, "all")
-    # fit.lasso <- glmnet::glmnet(x = PXperp, y = PXperpY, family = "gaussian", alpha = 1,
-    #                             lambda = cutoff, standardize = F, intercept = F)
-    #
-    # u.hat <- as.numeric(glmnet::coef.glmnet(fit.lasso)[-1])
+    # # the calculation of polyhedron is highly sensitive to the lasso solution,
+    # # so we use the penalized package for high-precision calculation of lasso solutions.
+    # # our preliminary simulation shows that the solution by glmnet occationally, though very rare,
+    # # is not accurate enough for polyhedron calculations.
+    # utils::capture.output(
+    #   fit.lasso <- penalized::penalized(response = PXperpY, penalized = PXperp, unpenalized = ~0, standardize = F,
+    #                          lambda1 = cutoff*n)
+    # )
+    # u.hat = penalized::coef(fit.lasso, "all")
+    fit.lasso <- glmnet::glmnet(x = PXperp, y = PXperpY, family = "gaussian", alpha = 1,
+                                lambda = cutoff, standardize = F, intercept = F,
+                                thresh = 1e-10, maxit = 1e7)
+
+    u.hat <- as.numeric(glmnet::coef.glmnet(fit.lasso)[-1])
 
     # ad-hoc check of kkt condition to make sure the lasso problem is what we actually want
     if (checkKKT(y = PXperpY, X = PXperp, lambda = cutoff, beta.hat = u.hat) == FALSE) {
@@ -190,6 +191,12 @@ outference <- function(formula, data, method = c("cook", "dffits", "lasso"),
     }
 
     constr <- constrInResponseLasso(n, p, PXperp, outlier.det, sign(u.hat[outlier.det]), cutoff)
+
+    # ad-hoc check of the polyhedron: Ay >= b should always hold
+    if (any(constr$A %*% y - constr$b < -1e-5)) {
+      stop("constraint for lasso is problematic")
+    }
+
     out <- list(fit.full = fit.full, fit.rm = fit.rm, method = method, cutoff = cutoff, outlier.det = outlier.det,
                magnitude = u.hat, constraint = constr, sigma = sigma, call = this.call)
     class(out) <- "outference"
