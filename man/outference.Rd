@@ -114,7 +114,7 @@ summary(fit)          # extract the corrected p-values after outlier removal
 Lee, Jason D., et al. "Exact post-selection inference, with application to the lasso."
     The Annals of Statistics 44.3 (2016): 907-927.
 
-OUR PAPER.
+S. Chen and J. Bien. “Valid Inference Corrected for Outlier Removal”. arXiv preprint arXiv:1711.10635 (2017).
 }
 \seealso{
 \code{\link{summary.outference}} for summaries;

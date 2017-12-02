@@ -91,7 +91,7 @@
 #'
 #' @references Lee, Jason D., et al. "Exact post-selection inference, with application to the lasso."
 #'     The Annals of Statistics 44.3 (2016): 907-927.
-#' @references OUR PAPER.
+#' @references S. Chen and J. Bien. “Valid Inference Corrected for Outlier Removal”. arXiv preprint arXiv:1711.10635 (2017).
 #'
 #' @author Shuxiao Chen <sc2667@cornell.edu>
 #'
@@ -309,7 +309,7 @@ outference <- function(formula, data, method = c("cook", "dffits", "lasso"),
 #'     \code{\link{predict.outference}} for making predictions.
 #'
 #'
-#' @references OUR PAPER.
+#' @references S. Chen and J. Bien. “Valid Inference Corrected for Outlier Removal”. arXiv preprint arXiv:1711.10635 (2017).
 #'
 #' @author Shuxiao Chen <sc2667@cornell.edu>
 #'

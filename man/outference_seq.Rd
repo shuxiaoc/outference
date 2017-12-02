@@ -62,7 +62,7 @@ The \eqn{i}-th observation is considered as an outlier when its Cook's distance
     is the list of \eqn{Q_i} matrices.
 }
 \references{
-OUR PAPER.
+S. Chen and J. Bien. “Valid Inference Corrected for Outlier Removal”. arXiv preprint arXiv:1711.10635 (2017).
 }
 \seealso{
 \code{\link{summary.outference}} for summaries;
