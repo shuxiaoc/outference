@@ -1,0 +1,6 @@
+bibentry(bibtype = "article",
+         title = "Valid Inference Corrected for Outlier Removal",
+         author = personList(person("Shuxiao", "Chen"), person("Jacob", "Bien")),
+         year = {2017},
+         url = "https://arxiv.org/abs/1711.10635",
+         journal = "arXiv preprint")
