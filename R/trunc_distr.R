@@ -471,7 +471,7 @@ TFRatioApprox <- function(df1, df2, E1, E2) {
     E1 <- sqrt(E1)
     E2 <- sqrt(E2)
 
-    # By "A Study of the Accuracy of Some Approximations for t, χ2, and F Tail Probabilities",
+    # By "A Study of the Accuracy of Some Approximations for t, chi-squre, and F Tail Probabilities",
     # Equation (2.6),
     # P(T >= t) = P( Z >= (df2 - 2/3 + 1/(10*df2)) * sqrt(log(1 + t^2/df2) / (df2 - 5/6)) )
 
@@ -519,7 +519,7 @@ TFRatioApprox <- function(df1, df2, E1, E2) {
   # we know df1 > 1, so it does not reduce to the square of t-distribution
   # recall we want P(X in E1) / P(X in E2), X ~ F(df1, df2)
 
-  # By "A Study of the Accuracy of Some Approximations for t, χ2, and F Tail Probabilities",
+  # By "A Study of the Accuracy of Some Approximations for t, chi-square, and F Tail Probabilities",
   # Equation 4.3,
   # P(X >= x) = P( Z >= d * sqrt( (1 + q * g(S / (n*p)) + p * g(R / (n*q))) / ((n + 1/6) * p * q) ) ),
   # where S = (df2 - 1)/2, R = (df1 - 1)/2, n = (df1 + df2 - 2)/2,
